@@ -1,11 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 
-function QuestionItem({ question, handleDelete }) {
+function QuestionItem({ question, handleDelete, handleUpdateEvent }) {
   const { id, prompt, answers, correctIndex } = question;
+  const [updateIndex, setUpdateIndex] = useState(correctIndex)
   
-  function deleteQuestion(id){
+  function deleteQuestion(){
     handleDelete(question.id)
 }
+
+  function changeDropdown(e){
+    setUpdateIndex(e.target.value)
+    handleUpdateEvent(question.id, e.target.value)
+  }
 
 
 
@@ -21,7 +27,7 @@ function QuestionItem({ question, handleDelete }) {
       <h5>Prompt: {prompt}</h5>
       <label>
         Correct Answer:
-        <select defaultValue={correctIndex}>{options}</select>
+        <select onChange={changeDropdown} defaultValue={correctIndex}>{options}</select>
       </label>
       <button onClick={deleteQuestion}>Delete Question</button>
     </li>

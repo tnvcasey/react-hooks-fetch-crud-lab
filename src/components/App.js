@@ -24,12 +24,36 @@ function App() {
     const updatedQuestions = questions.filter(question => question.id !== id)
     setQuestions(updatedQuestions)
   }
+
+  function handleUpdateEvent(id, value){
+    fetch('http://localhost:4000/questions/${id}', {
+      method: "PATCH", 
+      headers: {
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify({
+        "correctIndex": value
+      })
+    })
+    .then(r=>r.json())
+    .then(question=> {
+      const updatedAnswer = question.correctIndex
+      const updatedQuestions = [...questions]
+      updatedQuestions.map(question => {
+        if(question.id === id) {
+          question.correctIndex = updatedAnswer
+        } else {
+          return true
+        }
+      })
+    })
+  }
   
 
   return (
     <main>
       <AdminNavBar onChangePage={setPage} />
-      {page === "Form" ? <QuestionForm handleAddQuestion={handleAddQuestion}/> : <QuestionList setQuestions={setQuestions} questions={questions} handleDelete={handleDelete}/>}
+      {page === "Form" ? <QuestionForm handleAddQuestion={handleAddQuestion}/> : <QuestionList handleUpdateEvent={handleUpdateEvent} setQuestions={setQuestions} questions={questions} handleDelete={handleDelete}/>}
     </main>
   );
 }
